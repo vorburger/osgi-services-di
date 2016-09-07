@@ -1,4 +1,4 @@
-package ch.vorburger.osgi.examples.greeter.ds.test;
+package ch.vorburger.osgi.examples.greeter.ds2.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,14 +12,14 @@ import ch.vorburger.osgi.util.OsgiUtil;
 import ch.vorburger.osgi.util.OsgiUtil.CloseableService;
 
 @RunWith(MockitoJUnitRunner.class) // Do NOT remove this (even if not using Mockito); see https://github.com/bndtools/bndtools/issues/1527
-public class GreeterDsImplIntegrationTest {
+public class GreeterDsImpl2IntegrationTest {
 
-	private final BundleContext bundleContext = OsgiUtil.getBundleContext(GreeterDsImplIntegrationTest.class);
+	private final BundleContext bundleContext = OsgiUtil.getBundleContext(GreeterDsImpl2IntegrationTest.class);
 
 	@Test
 	public void greeterViaDeclarativeService() throws Exception {
 		try (CloseableService<Greeter> service = OsgiUtil.getService(bundleContext, Greeter.class)) {
-			assertEquals("hello, world", service.get().greet("world"));
+			assertEquals("hello, world.", service.get().greet("world"));
 		}
 	}
 

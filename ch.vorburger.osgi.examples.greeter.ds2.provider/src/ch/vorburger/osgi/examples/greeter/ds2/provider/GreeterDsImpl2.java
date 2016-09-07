@@ -9,6 +9,10 @@ public class GreeterDsImpl2 implements Greeter {
 
 	private final GreetHelper greetHelper;
 	
+	public GreeterDsImpl2() {
+		this(new GreetHelperImpl());
+	}
+	
 	public GreeterDsImpl2(GreetHelper greetHelper) {
 		super();
 		this.greetHelper = greetHelper;
