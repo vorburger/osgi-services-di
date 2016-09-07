@@ -12,9 +12,10 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 -buildpath: \
 	${junit},\
 	${mockito},\
-	osgi.annotation; version=6.0.1,\
-	osgi.core; version=6.0,\
-	osgi.cmpn; version=6.0
+	osgi.annotation;version=6.0.1,\
+	osgi.core;version=6.0,\
+	osgi.cmpn;version=6.0,\
+	ch.vorburger.osgi.examples.greeter.api;version=latest
 
 javac.source: 1.8
 javac.target: 1.8
@@ -23,7 +24,10 @@ javac.target: 1.8
 # Other runtime dependencies should be added as necessary
 -runbundles: \
 	${junit},\
-	${mockito}
+	${mockito},\
+	ch.vorburger.osgi.examples.greeter.api;version=latest,\
+	ch.vorburger.osgi.examples.greeter.ds.provider;version=latest,\
+	org.apache.felix.scr
 
 Bundle-Version: 0.0.0.${tstamp}
 Private-Package: ch.vorburger.osgi.examples.greeter.ds.test
@@ -34,3 +38,4 @@ Private-Package: ch.vorburger.osgi.examples.greeter.ds.test
 # Use Felix by default
 -runfw: org.apache.felix.framework;version=5
 -runvm: -ea
+-runee: JavaSE-1.8
