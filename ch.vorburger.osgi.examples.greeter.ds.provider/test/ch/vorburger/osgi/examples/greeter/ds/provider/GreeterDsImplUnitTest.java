@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class ExampleTest {
+public class GreeterDsImplUnitTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertEquals("hello, world", new GreeterDsImpl().greet("world"));
 	}
 
 }
