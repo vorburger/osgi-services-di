@@ -3,6 +3,8 @@ package ch.vorburger.osgi.examples.greeter.api;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * Greeter.
+ * 
  * <p>
  * This is an example of an interface that is expected to be implemented by Providers of the API. Adding methods to this
  * interface is a minor change, because only Providers will be affected.
@@ -12,8 +14,8 @@ import org.osgi.annotation.versioning.ProviderType;
  * @since 1.0
  */
 @ProviderType
-public interface ExampleProviderInterface {
+public interface Greeter {
 
-	// TODO: interface provided by template
+	String greet(String who);
 
 }
