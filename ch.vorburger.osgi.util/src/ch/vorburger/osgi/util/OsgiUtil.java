@@ -21,13 +21,13 @@ public class OsgiUtil {
 			throw new IllegalStateException("No Bundle for class (are you running in Java SE standalone instead of OSGi?): " + clazz);
 		return bundle.getBundleContext();
 	}
-
+	
 	public static <T> CloseableService<T> getService(BundleContext bundleContext, Class<T> clazz) throws InterruptedException {
 		ServiceTracker<T,T> serviceTracker = new ServiceTracker<>(bundleContext, clazz, null);
 		return new CloseableService<>(serviceTracker, clazz.toString());
 	}
 
-	public static class CloseableService<T> implements Closeable {
+	public static class CloseableService<T> implements AutoCloseable {
 
 		private final ServiceTracker<T, T> serviceTracker;
 		private final String description;
