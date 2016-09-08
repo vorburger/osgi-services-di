@@ -11,6 +11,7 @@ public class GreeterDsImpl2UnitTest {
 
 	@Test
 	public void testWithGreetHelperImpl() {
+		// NB: Having to do this here isn't great...
 		GreetHelper greetHelper = new GreetHelperImpl();
 		Greeter service = new GreeterDsImpl2(greetHelper);
 		
@@ -20,6 +21,7 @@ public class GreeterDsImpl2UnitTest {
 	@Test
 	public void testWithAlternativeSimplerGreetHelper() {
 		GreetHelper greetHelper = greeting -> greeting + "!!!";
+		// NB: Having to inject this here isn't great... what if other classes need the same - manually wire everywhere :(
 		Greeter service = new GreeterDsImpl2(greetHelper);
 		
 		assertEquals("hello, world!!!", service.greet("world"));
