@@ -1,6 +1,5 @@
 package ch.vorburger.osgi.util;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import org.osgi.framework.Bundle;
@@ -10,6 +9,8 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Utilities for OSGi.
+ * 
+ * Intended for writing tests - may not be suitable for production.
  *  
  * @author Michael Vorburger
  */

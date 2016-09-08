@@ -1,0 +1,11 @@
+-buildpath: \
+	ch.vorburger.osgi.examples.greeter.api;version=latest,\
+	osgi.core
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: 1.0.0.${tstamp}
+
+Private-Package: ch.vorburger.osgi.examples.greeter.prefix.provider
+Bundle-Activator: ch.vorburger.osgi.examples.greeter.prefix.provider.Activator

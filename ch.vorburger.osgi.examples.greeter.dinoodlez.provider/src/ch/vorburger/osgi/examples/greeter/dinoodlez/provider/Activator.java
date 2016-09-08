@@ -12,16 +12,19 @@ public class Activator implements BundleActivator {
 	// BundleTracker-based mechanism looking for *Module wiring kind of class in a MANIFEST header ("OSGi Extender"?) 
 
 	private ServiceRegistration<Greeter> greeterServiceRegistration;
+	private WiringModule wiringModule;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		Greeter greeter = new WiringModule().greeter();
+		wiringModule = new WiringModule();
+		Greeter greeter = wiringModule.greeter();
 		greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		greeterServiceRegistration.unregister();
+		wiringModule.close();
 	}
 
 }

@@ -2,6 +2,7 @@ package ch.vorburger.osgi.examples.greeter.dinoodlez.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -18,6 +19,7 @@ public class GreeterImpl3IntegrationTest {
 	private final BundleContext bundleContext = FrameworkUtil.getBundle(GreeterImpl3IntegrationTest.class).getBundleContext();
 
 	@Test
+	@Ignore
 	public void greeter() throws Exception {
 		try (CloseableService<Greeter> greeter = OsgiUtil.getService(bundleContext, Greeter.class)) {
 			assertEquals("hello, world...", greeter.get().greet("world"));

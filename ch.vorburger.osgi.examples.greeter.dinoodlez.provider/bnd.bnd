@@ -1,7 +1,8 @@
 -buildpath: \
 	osgi.annotation,\
 	ch.vorburger.osgi.examples.greeter.api;version=latest,\
-	osgi.core
+	osgi.core,\
+	ch.vorburger.osgi.util;version=latest
 -baseline: *
 
 -testpath: \

@@ -29,7 +29,8 @@ javac.target: 1.8
 	ch.vorburger.osgi.examples.greeter.api;version=latest,\
 	ch.vorburger.osgi.examples.greeter.ds.provider;version=latest,\
 	org.apache.felix.scr,\
-	ch.vorburger.osgi.util;version=latest
+	ch.vorburger.osgi.util;version=latest,\
+	ch.vorburger.osgi.examples.greeter.prefix.provider;version=latest
 
 Bundle-Version: 0.0.0.${tstamp}
 Private-Package: ch.vorburger.osgi.examples.greeter.ds.test

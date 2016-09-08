@@ -19,7 +19,7 @@ public class GreeterDsImplIntegrationTest {
 	@Test
 	public void greeterViaDeclarativeService() throws Exception {
 		try (CloseableService<Greeter> greeter = OsgiUtil.getService(bundleContext, Greeter.class)) {
-			assertEquals("hello, world", greeter.get().greet("world"));
+			assertEquals("[ANNOUNCEMENT] hello, world", greeter.get().greet("world"));
 		}
 	}
 
