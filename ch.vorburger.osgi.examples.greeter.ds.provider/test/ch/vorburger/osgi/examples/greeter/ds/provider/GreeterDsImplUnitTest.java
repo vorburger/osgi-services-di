@@ -10,8 +10,8 @@ public class GreeterDsImplUnitTest {
 
 	@Test
 	public void greeter() {
-		Greeter service = new GreeterDsImpl();
-		assertEquals("hello, world", service.greet("world"));
+		Greeter greeter = new GreeterDsImpl();
+		assertEquals("hello, world", greeter.greet("world"));
 	}
 
 }

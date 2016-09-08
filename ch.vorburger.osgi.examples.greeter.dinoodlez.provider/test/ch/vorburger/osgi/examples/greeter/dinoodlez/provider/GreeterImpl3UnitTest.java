@@ -10,14 +10,14 @@ public class GreeterImpl3UnitTest {
 
 	@Test
 	public void testWithGreetHelperImpl() {
-		Greeter service = new WiringModule().greeter();
-		assertEquals("hello, world...", service.greet("world"));
+		Greeter greeter = new WiringModule().greeter();
+		assertEquals("hello, world...", greeter.greet("world"));
 	}
 
 	@Test
 	public void testWithAlternativeSimplerGreetHelper() {
-		Greeter service = new TestWiringModule().greeter();
-		assertEquals("hello, world!!!", service.greet("world"));
+		Greeter greeter = new TestWiringModule().greeter();
+		assertEquals("hello, world!!!", greeter.greet("world"));
 	}
 	
 	static class TestWiringModule extends WiringModule {
