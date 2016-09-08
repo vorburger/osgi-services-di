@@ -15,7 +15,6 @@ public class GreeterDsImpl2 implements Greeter {
 	}
 	
 	public GreeterDsImpl2(GreetHelper greetHelper) {
-		super();
 		this.greetHelper = greetHelper;
 	}
 

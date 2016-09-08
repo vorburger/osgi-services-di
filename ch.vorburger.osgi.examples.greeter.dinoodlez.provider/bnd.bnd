@@ -1,0 +1,16 @@
+-buildpath: \
+	osgi.annotation,\
+	ch.vorburger.osgi.examples.greeter.api;version=latest,\
+	osgi.core
+-baseline: *
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: 1.0.0.${tstamp}
+
+Private-Package: ch.vorburger.osgi.examples.greeter.dinoodlez.provider
+Bundle-Activator: ch.vorburger.osgi.examples.greeter.dinoodlez.provider.Activator
