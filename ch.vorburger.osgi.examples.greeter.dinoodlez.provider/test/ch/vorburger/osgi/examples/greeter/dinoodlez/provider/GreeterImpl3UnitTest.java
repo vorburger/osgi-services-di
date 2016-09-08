@@ -9,28 +9,26 @@ import ch.vorburger.osgi.examples.greeter.api.Greeter;
 
 public class GreeterImpl3UnitTest {
 
+	GreetPrefixer testGreetPrefixer = greeting -> "3. " + greeting;
+
 	@Test
 	public void testWithGreetHelperImpl() {
-		Greeter greeter = new TestWiringModule().greeter();
+		Greeter greeter = new WiringModule(testGreetPrefixer).greeter();
 		assertEquals("3. hello, world...", greeter.greet("world"));
-	}
-
-	static class TestWiringModule extends WiringModule {
-		
-		@Override
-		GreetPrefixer greetPrefixer() {
-			return greeting -> "3. " + greeting;
-		}
 	}
 
 	@Test
 	public void testWithAlternativeSimplerGreetHelper() {
-		Greeter greeter = new TestAlternativeWiringModule().greeter();
+		Greeter greeter = new TestAlternativeWiringModule(testGreetPrefixer).greeter();
 		assertEquals("3. hello, world!!!", greeter.greet("world"));
 	}
 	
-	static class TestAlternativeWiringModule extends TestWiringModule {
+	static class TestAlternativeWiringModule extends WiringModule {
 		
+		TestAlternativeWiringModule(GreetPrefixer greetPrefixer) {
+			super(greetPrefixer);
+		}
+
 		@Override
 		GreetHelper greetHelper() {
 			return greeting -> greeting + "!!!";

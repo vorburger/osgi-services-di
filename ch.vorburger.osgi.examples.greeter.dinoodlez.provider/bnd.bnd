@@ -2,7 +2,7 @@
 	osgi.annotation,\
 	ch.vorburger.osgi.examples.greeter.api;version=latest,\
 	osgi.core,\
-	ch.vorburger.osgi.util;version=latest
+	ch.vorburger.dinoodlez.osgi;version=latest
 -baseline: *
 
 -testpath: \

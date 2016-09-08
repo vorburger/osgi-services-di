@@ -1,0 +1,9 @@
+
+* LICENSE header EPL, at least everywhere in ch.vorburger.dinoodlez.osgi
+
+* run this by some people and see what they think about it
+
+* TODOs
+
+* LOW [SZ] Is it somehow possible to use generics in ServiceRegistry and have the List<?> of ServiceRequirementsAvailableCallback#provide() match List<ServiceRequirement> requirements if that was a List<ServiceRequirement<T>> ?
+ 

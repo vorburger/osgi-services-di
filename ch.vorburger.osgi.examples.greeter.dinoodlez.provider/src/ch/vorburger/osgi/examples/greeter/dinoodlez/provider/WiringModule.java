@@ -5,8 +5,6 @@ import org.osgi.framework.FrameworkUtil;
 
 import ch.vorburger.osgi.examples.greeter.api.GreetPrefixer;
 import ch.vorburger.osgi.examples.greeter.api.Greeter;
-import ch.vorburger.osgi.util.OsgiUtil;
-import ch.vorburger.osgi.util.OsgiUtil.CloseableService;
 
 /**
  * Object wiring internal to this bundle.
@@ -14,9 +12,13 @@ import ch.vorburger.osgi.util.OsgiUtil.CloseableService;
  * Currently manual here, but if bigger, this could also be implemented with any
  * Dependency Injection (DI) framework.
  */
-public class WiringModule implements AutoCloseable {
+public class WiringModule {
 
-	private CloseableService<GreetPrefixer> closeableService;
+	private GreetPrefixer greetPrefixer;
+
+	WiringModule(GreetPrefixer greetPrefixer) {
+		this.greetPrefixer = greetPrefixer;
+	}
 
 	Greeter greeter() {
 		return new GreeterImpl3(greetPrefixer(), greetHelper());
@@ -27,21 +29,9 @@ public class WiringModule implements AutoCloseable {
 	}
 
 	GreetPrefixer greetPrefixer() {
-		try {
-			closeableService = OsgiUtil.getService(bundleContext(), GreetPrefixer.class);
-			return closeableService.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return greetPrefixer;
 	}
 	
-	@Override
-	public void close() throws Exception {
-		if (closeableService != null)
-			closeableService.close();
-	}
-
 	BundleContext bundleContext() {
 		return FrameworkUtil.getBundle(WiringModule.class).getBundleContext();
 	}

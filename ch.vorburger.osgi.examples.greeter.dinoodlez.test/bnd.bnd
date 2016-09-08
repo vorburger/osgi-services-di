@@ -29,7 +29,8 @@ javac.target: 1.8
 	ch.vorburger.osgi.examples.greeter.api;version=latest,\
 	ch.vorburger.osgi.examples.greeter.dinoodlez.provider;version=latest,\
 	ch.vorburger.osgi.util;version=latest,\
-	ch.vorburger.osgi.examples.greeter.prefix.provider;version=latest
+	ch.vorburger.osgi.examples.greeter.prefix.provider;version=latest,\
+	ch.vorburger.dinoodlez.osgi;version=latest
 
 Bundle-Version: 0.0.0.${tstamp}
 Private-Package: ch.vorburger.osgi.examples.greeter.dinoodlez.test
