@@ -1,9 +1,11 @@
 
-* LICENSE header EPL, at least everywhere in ch.vorburger.dinoodlez.osgi
+* ServiceRequirement set/isMultiple, and handle in OsgiServiceRegistry use getServices() instead of getService(), and null check each entry
 
 * run this by some people and see what they think about it
 
 * TODOs
+
+* LOW Better Generics simply by doing fixed variants for 1,2,3..7 dependencies! 
 
 * LOW [SZ] Is it somehow possible to use generics in ServiceRegistry and have the List<?> of ServiceRequirementsAvailableCallback#provide() match List<ServiceRequirement> requirements if that was a List<ServiceRequirement<T>> ?
  

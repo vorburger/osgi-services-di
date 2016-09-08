@@ -5,6 +5,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import ch.vorburger.dinoodlez.ServiceRegistry;
+import ch.vorburger.dinoodlez.ServiceRequirement;
 import ch.vorburger.osgi.examples.greeter.api.GreetPrefixer;
 import ch.vorburger.osgi.examples.greeter.api.Greeter;
 
@@ -18,13 +19,16 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		requirement = ServiceRegistry.INSTANCE.require(Activator.class, null, serviceInstances -> {
-			GreetPrefixer greetPrefixer = (GreetPrefixer) serviceInstances.get(0);
-			WiringModule wiringModule = new WiringModule(greetPrefixer);
-			Greeter greeter = wiringModule.greeter();
-			greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
-		}, () -> {
-			greeterServiceRegistration.unregister();
+		requirement = ServiceRegistry.INSTANCE.require(Activator.class, 
+				new ServiceRequirement[] {
+						ServiceRequirement.of(GreetPrefixer.class).build() 
+					}, serviceInstances -> {
+						GreetPrefixer greetPrefixer = (GreetPrefixer) serviceInstances.get(0);
+						WiringModule wiringModule = new WiringModule(greetPrefixer);
+						Greeter greeter = wiringModule.greeter();
+						greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
+					}, () -> {
+						greeterServiceRegistration.unregister();
 		});
 	}
 

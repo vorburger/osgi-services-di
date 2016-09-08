@@ -15,17 +15,27 @@ public class ServiceRegistrySingleton {
 	
 	public static ServiceRegistry getInstance() {
 		if (instance == null) {
-			throw new IllegalStateException("Something should have set instance before this ever got called");
+			Activator.start();
+			if (instance == null) {
+				logAndThrowException("Something should have set instance before this ever got called");
+			}
 		}
 		return instance;
 	}
 
 	static void setInstance(ServiceRegistry serviceRegistry) {
 		if (instance != null) {
-			if (serviceRegistry != null)
-				throw new IllegalStateException("Something already set instance");
+			if (serviceRegistry != null) {
+				logAndThrowException("Something already set instance");
+			}
 		}
 		instance = serviceRegistry;
 	}
 
+	private static void logAndThrowException(String message) {
+		IllegalStateException e = new IllegalStateException(message);
+		e.printStackTrace(System.err);
+		throw e;
+	}
+	
 }

@@ -7,10 +7,12 @@
  */
 package ch.vorburger.dinoodlez.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.osgi.framework.Bundle;
@@ -54,7 +56,7 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 
 			int n = requirements.size();
 			this.trackerAvailability = new CopyOnWriteArrayList<>(new Boolean[n]);
-			this.serviceTrackers = null;
+			this.serviceTrackers = new ArrayList<>(n);
 			
 			for (int i = 0; i < n; i++) {
 				ServiceRequirement serviceRequirement = requirements.get(i);
@@ -67,20 +69,24 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 
 		ServiceTracker<?,?> getServiceTracker(BundleContext bundleContext, int i, ServiceRequirement serviceRequirement) {
 			Filter filter = null;
-			String filterString = null;
 			if (serviceRequirement.getFilterObject().isPresent()) {
 				filter = (Filter) serviceRequirement.getFilterObject().get();
-			} else if (!serviceRequirement.getProperties().isEmpty()) {
-				throw new UnsupportedOperationException("TODO implement transformation of Map to filterString");
-			} else if (serviceRequirement.getFilterString().isPresent()) {
-				filterString = serviceRequirement.getFilterString().get();
+			} else {
+				String filterString = null;
+				if (!serviceRequirement.getProperties().isEmpty()) {
+					throw new UnsupportedOperationException("TODO implement transformation of Map to filterString");
+				} else if (serviceRequirement.getFilterString().isPresent()) {
+					filterString = serviceRequirement.getFilterString().get();
+				}
+				if (filterString != null) {
+					try {
+						filter = bundleContext.createFilter(filterString);
+					} catch (InvalidSyntaxException e) {
+						throw new IllegalArgumentException("Bad filter String: " + filterString, e);
+					}
+				}
 			}
-			try {
-				filter = bundleContext.createFilter(filterString);
-			} catch (InvalidSyntaxException e) {
-				throw new IllegalArgumentException("Bad filter String: " + filterString, e);
-			}
-			
+
 			ServiceTrackerCustomizer<?,?> customizer = new IndexedTracker(i);
 			if (filter != null) {
 				return new ServiceTracker<>(bundleContext, filter, customizer); 
@@ -90,16 +96,25 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 		}
 		
 		void checkIfAllAreAvailable() {
-			boolean available = true;
+			AtomicBoolean available = new AtomicBoolean(true);
 			for (Boolean trackerAvailability : trackerAvailability) {
 				if (!trackerAvailability) {
-					available = false;
+					available.set(false);
 					break;
 				}
 			}
-			if (!available)
+			if (!available.get())
 				return;
-			List<Object> serviceInstances = serviceTrackers.stream().map(t -> t.getService()).collect(Collectors.toList());
+			List<Object> serviceInstances = serviceTrackers.stream().map(serviceTracker -> {
+				Object serviceInstance = serviceTracker.getService();
+				if (serviceInstance == null) {
+					log.error("getService() unexpectedly returned null, serviceTracker's serviceReference = " + serviceTracker.getServiceReference());
+					available.set(false);
+				}
+				return serviceInstance;
+			}).collect(Collectors.toList());
+			if (!available.get())
+				return;
 			availableCallback.provide(serviceInstances);
 		}
 		
@@ -146,19 +161,29 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 		}
 	}
 	
-	private Collection<Requirement> requirements = new ConcurrentLinkedQueue<>(); // CopyOnWriteArrayList ?
+	private final Logger log;
 	
+	private final Collection<Requirement> requirements = new ConcurrentLinkedQueue<>(); // CopyOnWriteArrayList ?
+	
+	public OsgiServiceRegistry(Logger logger) {
+		this.log = logger;
+	}
+
 	@Override
 	public AutoCloseable require(Object context, List<ServiceRequirement> requirements,
 			ServiceRequirementsAvailableCallback availableCallback,
 			ServiceRequirementRemovedCallback removedCallback) {
-		
-		if (requirements == null)
-			throw new NullPointerException("requirements");
-		if (requirements.isEmpty())
-			throw new IllegalArgumentException("requirements is empty (this call is thus useless)");
-		BundleContext bundleContext = getBundleContext(context);
-		return new Requirement(bundleContext, requirements, availableCallback, removedCallback);
+		try {
+			if (requirements == null)
+				throw new NullPointerException("requirements");
+			if (requirements.isEmpty())
+				throw new IllegalArgumentException("requirements is empty (this call is thus useless)");
+			BundleContext bundleContext = getBundleContext(context);
+			return new Requirement(bundleContext, requirements, availableCallback, removedCallback);
+		} catch (Exception e) {
+			log.error("require() failed", e);
+			throw e;
+		}
 	}
 
 	protected BundleContext getBundleContext(Object context) {

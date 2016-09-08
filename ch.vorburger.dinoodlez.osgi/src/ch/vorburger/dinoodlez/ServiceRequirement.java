@@ -22,6 +22,7 @@ import ch.vorburger.dinoodlez.ServiceRequirement.Builders.ServiceRequirementFilt
  */
 public class ServiceRequirement {
 
+	// TODO set/isMultiple ?
 	// TODO set/isOptional ?
 
 	private final String className;

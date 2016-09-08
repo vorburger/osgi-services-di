@@ -10,3 +10,4 @@ Export-Package: \
 	ch.vorburger.dinoodlez,\
 	ch.vorburger.dinoodlez.monitoring
 Private-Package: ch.vorburger.dinoodlez.internal
+Bundle-Activator: ch.vorburger.dinoodlez.internal.Activator

@@ -7,6 +7,7 @@
  */
 package ch.vorburger.dinoodlez;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -33,6 +34,11 @@ public interface ServiceRegistry {
 			List<ServiceRequirement> requirements,
 			ServiceRequirementsAvailableCallback availableCallback, 
 			ServiceRequirementRemovedCallback removedCallback);
+
+	default AutoCloseable require(Object context, ServiceRequirement[] serviceRequirements,
+			ServiceRequirementsAvailableCallback availableCallback, ServiceRequirementRemovedCallback removedCallback) {
+		return require(context, Arrays.asList(serviceRequirements), availableCallback, removedCallback);
+	}
 	
 	// TODO register as a new method variant of require - useful for monitoring to know what it would create..
 	// New method much better than an optional argument to.  Empty requirements not allowed.
