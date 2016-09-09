@@ -41,7 +41,7 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 	
 	private class Requirement implements AutoCloseable {
 
-		final List<ServiceTracker<?, ?>> serviceTrackers;
+		final List<IndexedServiceTracker<?, ?>> serviceTrackers;
 		final List<Boolean> trackerAvailability;
 		final ServiceRequirementsAvailableCallback availableCallback;
 		final ServiceRequirementRemovedCallback removedCallback;
@@ -61,13 +61,13 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 			for (int i = 0; i < n; i++) {
 				ServiceRequirement serviceRequirement = requirements.get(i);
 				this.trackerAvailability.set(i, Boolean.FALSE);
-				ServiceTracker<?, ?> serviceTracker = getServiceTracker(bundleContext, i, serviceRequirement);
+				IndexedServiceTracker<?, ?> serviceTracker = getServiceTracker(bundleContext, i, serviceRequirement);
 				serviceTracker.open();
 				serviceTrackers.add(serviceTracker);
 			}
 		}
 
-		ServiceTracker<?,?> getServiceTracker(BundleContext bundleContext, int i, ServiceRequirement serviceRequirement) {
+		IndexedServiceTracker<?,?> getServiceTracker(BundleContext bundleContext, int i, ServiceRequirement serviceRequirement) {
 			Filter filter = null;
 			if (serviceRequirement.getFilterObject().isPresent()) {
 				filter = (Filter) serviceRequirement.getFilterObject().get();
@@ -87,15 +87,14 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 				}
 			}
 
-			ServiceTrackerCustomizer<?,?> customizer = new IndexedTracker(i);
 			if (filter != null) {
-				return new ServiceTracker<>(bundleContext, filter, customizer); 
+				return new IndexedServiceTracker<>(i, bundleContext, filter); 
 			} else {
-				return new ServiceTracker<>(bundleContext, serviceRequirement.getClassName(), customizer); 
+				return new IndexedServiceTracker<>(i, bundleContext, serviceRequirement.getClassName()); 
 			}
 		}
 		
-		void checkIfAllAreAvailable() {
+		void checkIfAllAreAvailable(int i, Object newServiceInstanceAtIndex) {
 			AtomicBoolean available = new AtomicBoolean(true);
 			for (Boolean trackerAvailability : trackerAvailability) {
 				if (!trackerAvailability) {
@@ -107,12 +106,15 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 				return;
 			List<Object> serviceInstances = serviceTrackers.stream().map(serviceTracker -> {
 				Object serviceInstance = serviceTracker.getService();
+/*				
 				if (serviceInstance == null) {
-					log.error("getService() unexpectedly returned null, serviceTracker's serviceReference = " + serviceTracker.getServiceReference());
+					log.error("getService() unexpectedly returned null, serviceTracker #" + serviceTracker.index + "'s serviceReference = " + serviceTracker.getServiceReference());
 					available.set(false);
 				}
+*/				
 				return serviceInstance;
 			}).collect(Collectors.toList());
+			serviceInstances.set(i, newServiceInstanceAtIndex);
 			if (!available.get())
 				return;
 			availableCallback.provide(serviceInstances);
@@ -120,7 +122,7 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 		
 		void unavailable() {
 			removedCallback.removed();
-			// TODO ungetService for each serviceTracker 
+			serviceTrackers.forEach(serviveTracker -> serviveTracker.unget());
 		}
 		
 		@Override
@@ -132,31 +134,57 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 			requirements.remove(this);
 		}
 		
-		@SuppressWarnings("rawtypes")
-		class IndexedTracker implements ServiceTrackerCustomizer {
+		class IndexedServiceTracker<S, T> extends ServiceTracker<S, T> {
 
 			final int index;
 			
-			protected IndexedTracker(int index) {
+			public IndexedServiceTracker(int index, BundleContext context, Class<S> clazz /*, ServiceTrackerCustomizer<S, T> customizer */) {
+				super(context, clazz, null);
+				this.index = index;
+			}
+
+			public IndexedServiceTracker(int index, BundleContext context, Filter filter /*, ServiceTrackerCustomizer<S, T> customizer */) {
+				super(context, filter, null);
+				this.index = index;
+			}
+
+			public IndexedServiceTracker(int index, BundleContext context, ServiceReference<S> reference /*, ServiceTrackerCustomizer<S, T> customizer */) {
+				super(context, reference, null);
+				this.index = index;
+			}
+
+			public IndexedServiceTracker(int index, BundleContext context, String clazz /*, ServiceTrackerCustomizer customizer */) {
+				super(context, clazz, null);
 				this.index = index;
 			}
 
 			@Override
-			public Object addingService(ServiceReference reference) {
+			public T addingService(ServiceReference<S> reference) {
+				T service = super.addingService(reference);
 				trackerAvailability.set(index, Boolean.TRUE);
-				checkIfAllAreAvailable();
-				return null;
+				checkIfAllAreAvailable(index, service);
+				return service;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference reference, Object service) {
-				// TODO What do we do in this case?
+			public void modifiedService(ServiceReference<S> reference, T service) {
+				// super.modifiedService(reference, service);
+				// TODO Is this correct, and good idea??
+				//   removedService(reference, service);
+				//   addingService(reference);
 			}
 
 			@Override
-			public void removedService(ServiceReference reference, Object service) {
+			public void removedService(ServiceReference<S> reference, T service) {
+				super.removedService(reference, service);
 				trackerAvailability.set(index, Boolean.FALSE);
 				unavailable();
+			}
+			
+			public void unget() {
+				// TODO is this smart?
+				close();
+				open();
 			}
 		}
 	}
