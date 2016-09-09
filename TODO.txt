@@ -1,11 +1,21 @@
 
+* manual tests, coming and going
+
+* better Generics simply by doing fixed variants for 1,2,3..7 dependencies! 
+
+* register not as method on ServiceRegistry but on new interface passed into Callback, to track reg and auto unreg ?
+
+* Guava binding
+
+* run this by some people and see what they think about it - worth pursuing?
+
+* service integration tests (easy to write)
+
 * ServiceRequirement set/isMultiple, and handle in OsgiServiceRegistry use getServices() instead of getService(), and null check each entry
 
-* run this by some people and see what they think about it
+* bundle coming and going integration tests, incl. itself (harder to write) 
 
 * TODOs
-
-* LOW Better Generics simply by doing fixed variants for 1,2,3..7 dependencies! 
 
 * LOW [SZ] Is it somehow possible to use generics in ServiceRegistry and have the List<?> of ServiceRequirementsAvailableCallback#provide() match List<ServiceRequirement> requirements if that was a List<ServiceRequirement<T>> ?
  

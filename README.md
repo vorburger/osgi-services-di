@@ -1,15 +1,25 @@
 # osgi-services-di
 
-This is NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework".  
+This is dinoodlez, NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework" :  
 
-For now, best just to look at the code to understand:
-
-1. Start with the API defined in _interface TODO_.
- 
+    interface (Async)ServiceRegistry {
+        require(Object context,
+            List<ServiceRequirement> requirements,
+            ServiceRequirementsAvailableCallback availableCallback, 
+            ServiceRequirementRemovedCallback removedCallback);
+    }
+    
+    interface ServiceRequirementsAvailableCallback {
+        void provide(List<?> serviceInstances);
+    }
+    
+    interface ServiceRequirementRemovedCallback {
+        void removed();
+    }
 
 ## Background
 
-Just pick your-preferred-DI-today; e.g. [Guice](https://github.com/google/guice/wiki/Motivation), or perhaps [Dagger &#x2021; / 2](http://google.github.io/dagger/users-guide), or maybe even still [Spring Framework Core](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html#beans-introduction).  Or even CDI or [HK2](https://hk2.java.net), or back to where it all started with [PicoContainer](http://picocontainer.com), etc.  You can even use this library without any DI framework, and use good old simple manual wiring code - if you only have a few objects collaborating, what's often not a bad choice at all.
+Just pick your-preferred-DI-today; e.g. [Guice](https://github.com/google/guice/wiki/Motivation), or perhaps [Dagger &#x2021; / 2](http://google.github.io/dagger/users-guide), or maybe even still [Spring Framework Core](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html#beans-introduction).  Or even CDI or [HK2](https://hk2.java.net), or back to where it all started with [PicoContainer](http://picocontainer.com), etc.  You can even use this library without any DI framework, and use good old simple manual wiring code - if you only have a few objects collaborating, that's often not a bad choice at all.
 
 Then use this very small "glue" library to get whatever existing established DI framework you chose for wiring inside your modules (e.g. OSGi bundles) to fit nicely into your overall dynamic environment, such as e.g. OSGi (although the core API here actually does not depend on OSGi).  A dynamic environment is one where dependent services can come and go at runtime, and you register, and un-register and re-register your own globally visible shared services as and when the ones you depend on come and go.
 
@@ -28,7 +38,7 @@ Using any standard established DI framework makes it easy to write tests for non
 
 ### Why not OSGi Blueprint (BP)
 
-BP got it all wrong.  It's basically Spring forced onto a dynamic environment with "damping" - JDK proxies that throw exceptions or block when dependent services have disappeared (or block and eventually fail after graceperiod timeout when they are not yet available); that just can't go well. - Also conceptually like CDI, too automagical and not explicit enough.
+BP got it all wrong.  It's basically Spring forced onto a dynamic environment with "damping" - JDK proxies which throw exceptions or block when dependent services have disappeared (or block and eventually fail after a graceperiod timeout when they are not yet available); that just can't go well. - Also conceptually like CDI, too automagical and not explicit enough.
 
 ### Why not OSGi Declarative Services (DS)
 
