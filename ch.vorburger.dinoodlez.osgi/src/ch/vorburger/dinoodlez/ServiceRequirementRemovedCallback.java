@@ -20,6 +20,6 @@ import org.osgi.annotation.versioning.ConsumerType;
 @FunctionalInterface
 public interface ServiceRequirementRemovedCallback {
 
-    void removed();
+    void onRemoved();
 
 }

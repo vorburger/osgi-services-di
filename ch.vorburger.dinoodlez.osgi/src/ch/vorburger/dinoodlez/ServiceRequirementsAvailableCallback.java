@@ -22,6 +22,6 @@ import org.osgi.annotation.versioning.ConsumerType;
 @FunctionalInterface
 public interface ServiceRequirementsAvailableCallback {
 
-    void provide(List<?> serviceInstances);
+    void onAvailable(List<?> serviceInstances);
 
 }

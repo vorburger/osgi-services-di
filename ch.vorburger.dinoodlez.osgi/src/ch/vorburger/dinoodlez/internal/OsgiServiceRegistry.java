@@ -117,11 +117,11 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 			serviceInstances.set(i, newServiceInstanceAtIndex);
 			if (!available.get())
 				return;
-			availableCallback.provide(serviceInstances);
+			availableCallback.onAvailable(serviceInstances);
 		}
 		
 		void unavailable() {
-			removedCallback.removed();
+			removedCallback.onRemoved();
 			serviceTrackers.forEach(serviveTracker -> serviveTracker.unget());
 		}
 		
