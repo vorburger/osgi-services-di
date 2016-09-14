@@ -19,16 +19,14 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		requirement = ServiceRegistry.INSTANCE.require(Activator.class, 
-				new ServiceRequirement[] {
-						ServiceRequirement.of(GreetPrefixer.class).build() 
-					}, serviceInstances -> {
-						GreetPrefixer greetPrefixer = (GreetPrefixer) serviceInstances.get(0);
+		requirement = ServiceRegistry.INSTANCE.require(Activator.class,
+			ServiceRequirement.of(GreetPrefixer.class).build(), 
+				greetPrefixer -> {
 						WiringModule wiringModule = new WiringModule(greetPrefixer);
 						Greeter greeter = wiringModule.greeter();
 						greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
-					}, () -> {
-						greeterServiceRegistration.unregister();
+				}, () -> {
+					greeterServiceRegistration.unregister();
 		});
 	}
 

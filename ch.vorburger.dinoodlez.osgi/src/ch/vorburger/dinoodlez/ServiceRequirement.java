@@ -20,7 +20,7 @@ import ch.vorburger.dinoodlez.ServiceRequirement.Builders.ServiceRequirementFilt
  * 
  * @author Michael Vorburger.ch
  */
-public class ServiceRequirement {
+public class ServiceRequirement<T> {
 
 	// TODO set/isMultiple ?
 	// TODO set/isOptional ?
@@ -98,14 +98,14 @@ public class ServiceRequirement {
 		return new ServiceRequirementFilterBuilder(clazzName);
 	}
 
-	public static ServiceRequirementFilterBuilder of(Class<?> clazz) {
+	public static <T> ServiceRequirementFilterBuilder<T> of(Class<T> clazz) {
 		return of(clazz.getName());
 	}
 
 	protected interface Builders {
         // Inner interface just to group all builders, and make them less visible on Ctrl-Space in IDE
 
-		public static class ServiceRequirementFilterBuilder {
+		public static class ServiceRequirementFilterBuilder<T> {
 			private final String clazzName;
 			
 			private ServiceRequirementFilterBuilder(String clazzName) { 
@@ -118,16 +118,16 @@ public class ServiceRequirement {
 				return builder;
 			}
 	
-			public ServiceRequirement build() {
-				return new ServiceRequirement(clazzName, Collections.emptyMap(), Optional.empty(), Optional.empty());
+			public ServiceRequirement<T> build() {
+				return new ServiceRequirement<T>(clazzName, Collections.emptyMap(), Optional.empty(), Optional.empty());
 			}
 			
-			public ServiceRequirement filter(String filter) {
-				return new ServiceRequirement(clazzName, Collections.emptyMap(), Optional.of(filter), Optional.empty());
+			public ServiceRequirement<T> filter(String filter) {
+				return new ServiceRequirement<T>(clazzName, Collections.emptyMap(), Optional.of(filter), Optional.empty());
 			}
 			
-			public ServiceRequirement filter(Object filter) {
-				return new ServiceRequirement(clazzName, Collections.emptyMap(), Optional.empty(), Optional.of(filter));
+			public ServiceRequirement<T> filter(Object filter) {
+				return new ServiceRequirement<T>(clazzName, Collections.emptyMap(), Optional.empty(), Optional.of(filter));
 			}
 		}
 		

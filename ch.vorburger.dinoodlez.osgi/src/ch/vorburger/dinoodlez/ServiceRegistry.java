@@ -8,6 +8,7 @@
 package ch.vorburger.dinoodlez;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -38,6 +39,14 @@ public interface ServiceRegistry {
 	default AutoCloseable require(Object context, ServiceRequirement[] serviceRequirements,
 			ServiceRequirementsAvailableCallback availableCallback, ServiceRequirementRemovedCallback removedCallback) {
 		return require(context, Arrays.asList(serviceRequirements), availableCallback, removedCallback);
+	}
+
+	@SuppressWarnings("unchecked")
+	default <T> AutoCloseable require(Object context, ServiceRequirement<T> serviceRequirement,
+			ServiceOneRequirementAvailableCallback<T> availableCallback, ServiceRequirementRemovedCallback removedCallback) {
+		return require(context, Collections.singletonList(serviceRequirement),
+				serviceInstances -> availableCallback.onAvailable((T) serviceInstances.get(0)),
+				removedCallback);
 	}
 	
 	// TODO register as a new method variant of require - useful for monitoring to know what it would create..

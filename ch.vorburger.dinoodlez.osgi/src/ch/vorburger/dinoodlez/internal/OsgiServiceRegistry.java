@@ -10,6 +10,7 @@ package ch.vorburger.dinoodlez.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -76,7 +77,8 @@ public class OsgiServiceRegistry implements ServiceRegistry, AutoCloseable {
 				if (!serviceRequirement.getProperties().isEmpty()) {
 					throw new UnsupportedOperationException("TODO implement transformation of Map to filterString");
 				} else if (serviceRequirement.getFilterString().isPresent()) {
-					filterString = serviceRequirement.getFilterString().get();
+					Optional<String> optionalFilterString = serviceRequirement.getFilterString();
+					filterString = optionalFilterString.get();
 				}
 				if (filterString != null) {
 					try {

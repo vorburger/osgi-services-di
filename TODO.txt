@@ -5,7 +5,7 @@
 
 * manual tests, coming and going
 
-* better Generics simply by doing fixed variants for 1,2,3..7 dependencies! 
+* finish up Generics POC outline by doing all fixed variants not just for 1 but for 2,3..7 dependencies!  Fix all generic warnings. 
 
 * register not as method on ServiceRegistry but on new interface passed into Callback, to track reg and auto unreg ?
 

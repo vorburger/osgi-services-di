@@ -6,18 +6,16 @@ Example [usage (e.g. in Activator; later possibly via MANIFEST.MF entry and bund
 
 ```java
 ServiceRegistry.INSTANCE.require(bundleContext, 
-    new ServiceRequirement[] {
-		ServiceRequirement.of(GreetPrefixer.class).build() 
-	}, serviceInstances -> {
-		GreetPrefixer greetPrefixer = (GreetPrefixer) serviceInstances.get(0);
-		// do whatever you like with the asynchronously obtained greetPrefixer here..
-		// typically you'd probably create another service which requires it;
-		// let's use manual constructor injection for illustration here,
-		// but this could also go through your-favourite-DI-framework:
-		Greeter greeter = new Greeter(greetPrefixer);
-		greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
-	}, () -> {
-		greeterServiceRegistration.unregister();
+	ServiceRequirement.of(GreetPrefixer.class).build(), 
+		greetPrefixer -> {
+			// do whatever you like with the asynchronously obtained greetPrefixer here..
+			// typically you'd probably create another service which requires it;
+			// let's use manual constructor injection for illustration here,
+			// but this could also go through your-favourite-DI-framework:
+			Greeter greeter = new Greeter(greetPrefixer);
+			greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
+		}, () -> {
+			greeterServiceRegistration.unregister();
 ```
 
 Here is some of [the underlying API](ch.vorburger.dinoodlez.osgi/src/ch/vorburger/dinoodlez/ServiceRegistry.java):
