@@ -1,21 +1,45 @@
 # osgi-services-di
 
-This is dinoodlez, NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework" :  
+This is dinoodlez, NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework".  
 
-    interface (Async)ServiceRegistry {
-        require(Object context,
-            List<ServiceRequirement> requirements,
-            ServiceRequirementsAvailableCallback availableCallback, 
-            ServiceRequirementRemovedCallback removedCallback);
-    }
-    
-    interface ServiceRequirementsAvailableCallback {
-        void provide(List<?> serviceInstances);
-    }
-    
-    interface ServiceRequirementRemovedCallback {
-        void removed();
-    }
+Example [usage (e.g. in Activator; later possibly via MANIFEST.MF entry and bundle tracker)](ch.vorburger.osgi.examples.greeter.dinoodlez.provider/src/ch/vorburger/osgi/examples/greeter/dinoodlez/provider/Activator.java):
+
+```java
+ServiceRegistry.INSTANCE.require(bundleContext, 
+    new ServiceRequirement[] {
+		ServiceRequirement.of(GreetPrefixer.class).build() 
+	}, serviceInstances -> {
+		GreetPrefixer greetPrefixer = (GreetPrefixer) serviceInstances.get(0);
+		// do whatever you like with the asynchronously obtained greetPrefixer here..
+		// typically you'd probably create another service which requires it;
+		// let's use manual constructor injection for illustration here,
+		// but this could also go through your-favourite-DI-framework:
+		Greeter greeter = new Greeter(greetPrefixer);
+		greeterServiceRegistration = context.registerService(Greeter.class, greeter, null);
+	}, () -> {
+		greeterServiceRegistration.unregister();
+```
+
+Here is some of [the underlying API](ch.vorburger.dinoodlez.osgi/src/ch/vorburger/dinoodlez/ServiceRegistry.java):
+
+```java
+interface ServiceRegistry {
+    require(Object context,
+        List<ServiceRequirement> requirements,
+        ServiceRequirementsAvailableCallback availableCallback, 
+        ServiceRequirementRemovedCallback removedCallback);
+}
+
+interface ServiceRequirementsAvailableCallback {
+    void provide(List<?> serviceInstances);
+}
+
+interface ServiceRequirementRemovedCallback {
+    void removed();
+}
+```
+
+There are [some remaining TODOs](TODO.txt).
 
 ## Background
 
