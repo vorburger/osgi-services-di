@@ -1,6 +1,6 @@
 # osgi-services-di
 
-This is dinoodlez, NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework".  
+This is dinoodlez, NYADIF - "Not Yet Another [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) (DI) Framework".  It's merely a small and simple API für asynchronous dependency injection, which allows to dynamically set up components when their services dependencies become available, possibly but not necessarily register new services, and unregisters them as dependencies go away, and come back, etc.  It does only that, and not anything else which DI usually do, e.g. no reflection to automagically wire objects, intentionally leaving that part to your code, or another established DI framework.
 
 Example [usage (e.g. in Activator; later possibly via MANIFEST.MF entry and bundle tracker)](ch.vorburger.osgi.examples.greeter.dinoodlez.provider/src/ch/vorburger/osgi/examples/greeter/dinoodlez/provider/Activator.java):
 

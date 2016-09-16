@@ -15,7 +15,12 @@
 
 * ServiceRequirement set/isMultiple, and handle in OsgiServiceRegistry use getServices() instead of getService(), and null check each entry
 
-* bundle coming and going integration tests, incl. itself (harder to write) 
+* bundle coming and going integration tests, incl. itself (harder to write; use https://ops4j1.jira.com/wiki/display/ops4j/Tinybundles ?) 
 
 * TODOs inline in code
  
+* split API into separate project which has no OSGi dependency (but is still a bundle)
+
+* ServiceRequirement isOptional null, with setDefaultImplementation
+
+* ServiceRequirement without requiring build() - just interface, but still allow refinement but only if needed (i.e. directly accept Builder in API)
